@@ -77,7 +77,6 @@ def combine_edge_thresholding(img):
     combined = np.zeros_like(dir_binary);
 
     combined[((gradx == 1) | (grady == 1)) & ((mag_binary == 1) & (dir_binary == 1))] = 1
-
     return combined;
 
 def hls_threshold(img, thresh=(0, 255)):
@@ -166,8 +165,8 @@ def color_n_edge_threshold(img):
     return combined_binary,color_binary;
 
 def test_color_n_edge_threshold():
-    #test_folder = '../test_images/';
-    test_folder = '../test_output_folder/';
+    test_folder = '../test_images/';
+    # test_folder = '../test_output_folder/';
     if not os.path.exists(test_folder):
         raise Exception("Test Folder does not exists");
         return None,None;
@@ -193,7 +192,7 @@ def test_color_n_edge_threshold():
         plt.show(); 
 
 def test_edge_thresholding():
-    img = cv2.imread('../test_images/straight_lines2.jpg');
+    img = cv2.imread('../test_images/test5.jpg');
     #img = img[...,::-1]; # Converting from BGR to RGB
 
     plt.subplot(121);
@@ -252,12 +251,21 @@ class Threshold_Tuner:
             cv2.imshow('output_window',out_img);
 
 if __name__=='__main__':
+    test_color_n_edge_threshold();
+    # img = cv2.imread('../test_images/test5.jpg');
+    # edge_thresh = combine_edge_thresholding(img);
+    # plt.subplot(121);
+    # plt.imshow(img[...,::-1]);
+
+    # plt.subplot(122);
+    # plt.imshow(edge_thresh,cmap='gray');
+    # plt.show();
+
+    # test_color_n_edge_threshold();
+    '''args = 15
 
     #test_color_n_edge_threshold();
-    args = 15
 
-    #test_color_n_edge_threshold();
-    '''    
     test_folder = '../test_output_folder/';
     if not os.path.exists(test_folder):
         raise Exception("Test Folder does not exists");
@@ -267,13 +275,14 @@ if __name__=='__main__':
         # plt.imshow(img);
         # plt.show();
 
-        tuner = Threshold_Tuner(hue_threshold ,args);
-        tuner.tune_threshold_by_sliders(img,low=0,high=255)
+        # tuner = Threshold_Tuner(hue_threshold ,args);
+        # tuner.tune_threshold_by_sliders(img,low=0,high=255)
 
-        #tuner = Threshold_Tuner(mag_thresh,args);
-        #tuner.tune_threshold_by_sliders(img,low=0,high=255)
+        tuner = Threshold_Tuner(mag_thresh,args);
+        tuner.tune_threshold_by_sliders(img,low=0,high=255)
 
         # tuner = Threshold_Tuner(dir_threshold,args);    
         # tuner.tune_threshold_by_sliders(img,low=0,high=np.pi/2.0);
-    '''
+        '''
+
     pass

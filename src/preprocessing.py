@@ -166,7 +166,7 @@ class Preprocessor:
         return unwarped_img;
 
     def test_perspective_transform(self):
-        img_path = '../test_images/test2.jpg'
+        img_path = '../test_images/straight_lines1.jpg'
         img = cv2.imread(img_path);
 
         # src = np.float32([
@@ -176,29 +176,29 @@ class Preprocessor:
         # (702, 460)
         # ])
 
-        plt.subplot(131);
-        plt.title("Original Image")
-        plt.imshow(img[:,:,::-1]);
-        # plt.scatter(src[:,0],src[:,1],c ='r',s=20)
-        # plt.show();
+        # plt.subplot(131);
+        # plt.title("Original Image")
+        # plt.imshow(img[:,:,::-1]);
+        # # plt.scatter(src[:,0],src[:,1],c ='r',s=20)
+        # # plt.show();
 
-        undist_img = undist_image(img);
-        plt.subplot(132);
-        plt.title("Undistorted Image")
-        plt.imshow(undist_img);
-        # plt.show();
+        undist_img = self.undist_image(img);
+        # plt.subplot(132);
+        # plt.title("Undistorted Image")
+        # plt.imshow(undist_img[:,:,::-1]);
+        # # plt.show();
 
-        persp_trans_img = perspective_transform(undist_img);
-        plt.subplot(133);
+        persp_trans_img = self.perspective_transform(undist_img);
+        # plt.subplot(133);
         plt.title("Perspective Transformed Image")
-        plt.imshow(persp_trans_img);
+        plt.imshow(persp_trans_img[:,:,::-1]);
         plt.show();
 
     def preprocess_image(self,img):
         '''
         Returns an preprocessed BGR Image
         '''
-        unidst_img = self.undist_image(img);
+        unidst_img = self.undist_image(img); # Keeping this as it is and overlaying text on undist_image in process_image itself
         persp_trans_img = self.perspective_transform(unidst_img);
         # cropping the image to remove dash of the car from the image
         persp_trans_img[675:,:,:] = [0,0,0]
@@ -225,6 +225,8 @@ if __name__=='__main__':
     print("--------Main Starts----------");
         
     #test_preprocess_img();
+    preprocessor = Preprocessor();
+    preprocessor.test_perspective_transform();
 
     print("--------Main Ends----------");
 

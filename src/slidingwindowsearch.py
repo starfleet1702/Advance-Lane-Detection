@@ -10,8 +10,11 @@ NUM_WINDOWS = 9
 COLOR_GREEN = (0, 255, 0)
 DEG_POLY = 2
 # Define conversions in x and y from pixels space to meters
+LANE_WIDTH_IN_METERS = 3.7;
+#NUM_PIXELS_BETWEEN_LANES_AFTER_PERSP_TRANSFORM = 820 # 1063-243 taken from perspective transformed image of straight lane lines
+NUM_PIXELS_BETWEEN_LANES_AFTER_PERSP_TRANSFORM = 794 # 1050-256 taken from perspective transformed image of straight lane lines, considering the distance from mid of lanes is 3.7 m
 YM_PER_PIX = 30/720  # meters per pixel in y dimension
-XM_PER_PIX = 3.7/700  # meters per pixel in x dimension
+XM_PER_PIX = LANE_WIDTH_IN_METERS/NUM_PIXELS_BETWEEN_LANES_AFTER_PERSP_TRANSFORM  # meters per pixel in x dimension
 IMG_H = 720;
 IMG_W = 1280;
 LAST_N_SAMPLES_TO_CONSIDER = 10;
@@ -208,6 +211,10 @@ class LaneDetector:
         postion = (img_center-self.left_fitx[IMG_H-1]) * XM_PER_PIX;
         return postion;
 
+    def get_vehicle_pos_from_center(self):
+        postion = self.get_vehicle_pos_from_left()-(LANE_WIDTH_IN_METERS/2);
+        return postion;
+
     def overlay_lanes_n_text(self,img_h,thresh_binary_img):
         # img_h = img.shape[0];
         ploty = np.linspace(start=0, stop=img_h, num=img_h)
@@ -229,7 +236,7 @@ class LaneDetector:
 
 def test_search_lanes():
     # img_path = '../test_output_folder/bin_img.jpg'
-    img_path = '../test_images/test1.jpg'
+    img_path = '../test_images/straight_lines1.jpg'
     img = cv2.imread(img_path)
     preprocessor = Preprocessor()
     pimg = preprocessor.preprocess_image(img)

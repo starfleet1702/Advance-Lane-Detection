@@ -57,6 +57,7 @@ def process_image(img):
     if(img.shape[2]==4): #4 channel image i.e Image with Alpha channel
         img=img[:,:,:3];
 
+    undist_img = preprocessor.undist_image(img);
     pre_image = preprocessor.preprocess_image(img)
 
     thresh_binary_img, color_binary = color_n_edge_threshold(pre_image);
@@ -69,16 +70,19 @@ def process_image(img):
     img_h = img.shape[0]
     overlay = lanedetector.overlay_lanes_n_text(img_h,thresh_binary_img);
     overlay = preprocessor.inv_perspective_transform(overlay);
-    out_img = cv2.addWeighted(img[...,::-1], 1, overlay, 0.3, 0)
+    out_img = cv2.addWeighted(undist_img[...,::-1], 1, overlay, 0.3, 0) # drawing overlay on undistorted image
     
     mr,lr,rr = lanedetector.get_road_radius()
 
     radius_txt = "Radius of Curvature is : {:0.2f} m".format(mr)
-    pos = lanedetector.get_vehicle_pos_from_left();
-    pos_txt = "Distance left : {:0.2f} m".format(pos);
+    pos = lanedetector.get_vehicle_pos_from_center();
+    pos_txt = "Distance from center : {:0.2f} m".format(pos);
     # radius_txt = "left:{:0.2f} m ,right:{:0.2f} m".format(lr,rr);
-    cv2.putText(out_img,radius_txt,(50,100), cv2.FONT_HERSHEY_SIMPLEX, 2,(255,255,255),3,cv2.LINE_AA)
-    cv2.putText(out_img,pos_txt,(50,200), cv2.FONT_HERSHEY_SIMPLEX, 2,(255,255,255),3,cv2.LINE_AA)
+    radius_txt_color = (255,255,255);
+    pos_txt_color = (255,255,255);
+    
+    cv2.putText(out_img,radius_txt,(50,100), cv2.FONT_HERSHEY_SIMPLEX, 2,radius_txt_color,3,cv2.LINE_AA)
+    cv2.putText(out_img,pos_txt,(50,200), cv2.FONT_HERSHEY_SIMPLEX, 2,pos_txt_color,3,cv2.LINE_AA)
     out_img = cv2.cvtColor(out_img,cv2.COLOR_BGR2RGB);
 
     return out_img,thresh_binary_img,vis_img;
@@ -109,8 +113,12 @@ def run_on_video(path):
 
 def test_on_frame():
     
-    test_folder = './ip_frames/';
-    file_name = '1.jpg'
+    # test_folder = './ip_frames/';
+    # file_name = '1.jpg'
+
+    test_folder = '../test_images/';
+    file_name = 'straight_lines1.jpg'
+
     if not os.path.exists(test_folder):
         raise Exception("Test Folder does not exists");
 
